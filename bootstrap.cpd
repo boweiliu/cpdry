@@ -1,4 +1,4 @@
-// everything before first `#if 0` and last `#endif` is summarily ignored by cpd compiler!!
+// everything before first `#if 0` and last `#endif` is summarily ignored by cpd compiler!! but we keep the newlines so line numbers match up.
 #if 0
 { /* comments ? */ }
 { /* yeah comments should be braces followed by c++ style comments. later we will attain the ability to infer the outer braces from just the slash star. */ }
@@ -39,3 +39,4 @@ int main(int argc, const char ** argv) {
 { // This ends the parsing
 #endif
 // everything before first `#if 0` and last `#endif` is summarily ignored by cpd compiler!!
+
