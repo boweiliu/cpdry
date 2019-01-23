@@ -1,4 +1,5 @@
-
+// everything before first `#if 0` and last `#endif` is summarily ignored by cpd compiler!!
+#if 0
 { /* comments ? */ }
 { /* yeah comments should be braces followed by c++ style comments. later we will attain the ability to infer the outer braces from just the slash star. */ }
 { /* also - we will be able to switch our brace character to parens later depending on language settings. */ }
@@ -7,24 +8,34 @@
 { // this seems fine. this even works across lines if you remember the close parens. just note that you now cant have braces in your comments without escaping them with }} double braces or something. }
 
 { // possible syntaxes for functions: }
-{ // #def void func ( ) { } }
-{ // #def func ( ) : void { } }
-{ // #def func ( ) { } }
-{ // #let func = { } } { // applies for the rest of the file ... }
+{ #def void func ( ) { } }
+{ #def func ( ) : void { } }
+{ #def func ( ) { } }
+{ #let func = { } } { // applies for the rest of the file ... }
 
 { // this defines a verbatim c/c++ block }
+#else
 
 // parse the thing
 #include <iostream>
 #include <string>
 
 int main(int argc, const char ** argv) {
-    std::istream in_f;
-    if (argc < 2) { // use std in
-        std::cout << "n
-    std::string fname = argv[1];
+    //std::istream * fp;
+    //if (argc < 2) { // use std in
+    //    std::cout << "n
+    //std::string fname = argv[1];
     
     return 0;
 }
 
+// this ends a verbatim c/c++ block
+#endif
+#if 0
 
+
+
+
+{ // This ends the parsing
+#endif
+// everything before first `#if 0` and last `#endif` is summarily ignored by cpd compiler!!
