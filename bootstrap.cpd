@@ -34,15 +34,20 @@ int main(int argc, const char ** argv) {
     std::unique_ptr<std::ostream, decltype(&close_outfile)> out_fp(nullptr, &no_op<std::ostream *>);
     if (argc < 2) { // use std in
         in_fp = std::unique_ptr<std::istream, decltype(&close_infile)>(&std::cin, &no_op<std::istream *>);
-        out_fp = std::unique_ptr<std::ostream, decltype(&close_outfile)>(&std::cin, &no_op<std::ostream *>);
+        out_fp = std::unique_ptr<std::ostream, decltype(&close_outfile)>(&std::cout, &no_op<std::ostream *>);
     } else {
         std::string fname = argv[1];
         in_fp = std::unique_ptr<std::istream, decltype(&close_infile)>(new std::ifstream(fname.c_str()), &close_infile);
-        out_fp = std::unique_ptr<std::ostream, decltype(&close_outfile)>(new std::ofstream(), &close_outfile);
+        // replace .cpd with .cpp
+        std::string out_fname = fname.substr(0, fname.length() - 1) + "p";
+        std::cout << "DEBUG" << out_fname << std::endl;
+        out_fp = std::unique_ptr<std::ostream, decltype(&close_outfile)>(new std::ofstream(out_fname.c_str()), &close_outfile);
     }
     // now start reading lines of file
     std::string line;
+    std::ostream &out_fh = *out_fp;
     while (std::getline(*in_fp, line)) {
+        out_fh << line << std::endl;
     }
     
     return 0;
