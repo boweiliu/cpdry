@@ -1,11 +1,13 @@
 // everything before first `#if 0` and last `#endif` is summarily ignored by cpd compiler!! but we keep the newlines so line numbers match up.
 #if 0
-{ /* comments ? */ }
-{ /* yeah comments should be braces followed by c++ style comments. later we will attain the ability to infer the outer braces from just the slash star. */ }
+{ /* comments */ }
+{ /* comments should be braces followed by c++ style comments. later we will attain the ability to infer the outer braces from just the slash star. */ }
 { /* also - we will be able to switch our brace character to parens later depending on language settings. */ }
 { /* also need to provide a tool to switch between those settings so people with different preferences can mutuallly understand each other more easily. */ }
 { /* how about full line comments? */ }
 { // this seems fine. this even works across lines if you remember the close parens. just note that you now cant have braces in your comments without escaping them with }} double braces or something. }
+
+{ // NOTE: only support ascii for now }
 
 { // possible syntaxes for functions: }
 { #def void func ( ) { } }
@@ -13,18 +15,35 @@
 { #def func ( ) { } }
 { #let func = { } } { // applies for the rest of the file ... }
 
-{ // this defines a verbatim c/c++ block }
+{ // this starts a verbatim c/c++ block }
 #else
 
 // parse the thing
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <memory>
+
+static void close_infile(std::istream *fh) { dynamic_cast<std::ifstream *>(fh)->close(); }
+static void close_outfile(std::ostream *fh) { dynamic_cast<std::ofstream *>(fh)->close(); }
+template <class T>
+static void no_op(T fh) { }
 
 int main(int argc, const char ** argv) {
-    //std::istream * fp;
-    //if (argc < 2) { // use std in
-    //    std::cout << "n
-    //std::string fname = argv[1];
+    std::unique_ptr<std::istream, decltype(&close_infile)> in_fp(nullptr, &no_op<std::istream *>);
+    std::unique_ptr<std::ostream, decltype(&close_outfile)> out_fp(nullptr, &no_op<std::ostream *>);
+    if (argc < 2) { // use std in
+        in_fp = std::unique_ptr<std::istream, decltype(&close_infile)>(&std::cin, &no_op<std::istream *>);
+        out_fp = std::unique_ptr<std::ostream, decltype(&close_outfile)>(&std::cin, &no_op<std::ostream *>);
+    } else {
+        std::string fname = argv[1];
+        in_fp = std::unique_ptr<std::istream, decltype(&close_infile)>(new std::ifstream(fname.c_str()), &close_infile);
+        out_fp = std::unique_ptr<std::ostream, decltype(&close_outfile)>(new std::ofstream(), &close_outfile);
+    }
+    // now start reading lines of file
+    std::string line;
+    while (std::getline(*in_fp, line)) {
+    }
     
     return 0;
 }
@@ -32,7 +51,7 @@ int main(int argc, const char ** argv) {
 // this ends a verbatim c/c++ block
 #endif
 #if 0
-
+{ // more stuff here }
 
 
 
