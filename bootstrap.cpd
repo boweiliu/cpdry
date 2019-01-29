@@ -22,32 +22,45 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <memory>
 
-static void close_infile(std::istream *fh) { dynamic_cast<std::ifstream *>(fh)->close(); }
-static void close_outfile(std::ostream *fh) { dynamic_cast<std::ofstream *>(fh)->close(); }
+using std::istream;
+using std::ostream;
+using std::ifstream;
+using std::ofstream;
+#include <memory> 
+using std::unique_ptr;
+using std::string;
+using std::cin;
+using std::cout;
+using std::getline;
+
+static void close_infile(istream *fh) { dynamic_cast<ifstream *>(fh)->close(); }
+static void close_outfile(ostream *fh) { dynamic_cast<ofstream *>(fh)->close(); }
 template <class T>
 static void no_op(T fh) { }
 
 int main(int argc, const char ** argv) {
-    std::unique_ptr<std::istream, decltype(&close_infile)> in_fp(nullptr, &no_op<std::istream *>);
-    std::unique_ptr<std::ostream, decltype(&close_outfile)> out_fp(nullptr, &no_op<std::ostream *>);
+    // Context managers are the first thing to tackle. No need for stupid unique ptr business. Just add syntactic sugar so we clean up resources. Not necessarily exception safe either.
+    unique_ptr<istream, decltype(&close_infile)> in_fp(nullptr, &no_op<istream *>);
+    unique_ptr<ostream, decltype(&close_outfile)> out_fp(nullptr, &no_op<ostream *>);
+    // also if statements and how they play with const types.
     if (argc < 2) { // use std in
-        in_fp = std::unique_ptr<std::istream, decltype(&close_infile)>(&std::cin, &no_op<std::istream *>);
-        out_fp = std::unique_ptr<std::ostream, decltype(&close_outfile)>(&std::cout, &no_op<std::ostream *>);
+        in_fp = unique_ptr<istream, decltype(&close_infile)>(&cin, &no_op<istream *>);
+        out_fp = unique_ptr<ostream, decltype(&close_outfile)>(&cout, &no_op<ostream *>);
     } else {
-        std::string fname = argv[1];
-        in_fp = std::unique_ptr<std::istream, decltype(&close_infile)>(new std::ifstream(fname.c_str()), &close_infile);
+        string fname = argv[1];
+        in_fp = unique_ptr<istream, decltype(&close_infile)>(new ifstream(fname.c_str()), &close_infile);
         // replace .cpd with .cpp
-        std::string out_fname = fname.substr(0, fname.length() - 1) + "p";
-        std::cout << "DEBUG" << out_fname << std::endl;
-        out_fp = std::unique_ptr<std::ostream, decltype(&close_outfile)>(new std::ofstream(out_fname.c_str()), &close_outfile);
+        string out_fname = fname.substr(0, fname.length() - 1) + "p";
+        out_fp = unique_ptr<ostream, decltype(&close_outfile)>(new ofstream(out_fname.c_str()), &close_outfile);
     }
     // now start reading lines of file
-    std::string line;
-    std::ostream &out_fh = *out_fp;
-    while (std::getline(*in_fp, line)) {
-        out_fh << line << std::endl;
+    string line;
+    ostream &out_fh = *out_fp;
+    int line_no = -1;
+    while (getline(*in_fp, line)) {
+        line_no += 1;
+        out_fh << line << "\n";
     }
     
     return 0;
