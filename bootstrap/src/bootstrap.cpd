@@ -59,6 +59,11 @@ int main(int argc, const char ** argv) {
     ostream &out_fh = *out_fp;
     int line_no = -1;
     while (getline(*in_fp, line)) {
+        for ( auto ch : line ) {
+            if (ch == '(') {
+                // do
+            }
+        }
         line_no += 1;
         out_fh << line << "\n";
     }
