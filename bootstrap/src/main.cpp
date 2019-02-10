@@ -37,7 +37,7 @@ using std::getline;
 static void close_infile(istream *fh) { dynamic_cast<ifstream *>(fh)->close(); }
 static void close_outfile(ostream *fh) { dynamic_cast<ofstream *>(fh)->close(); }
 template <class T>
-static void no_op(T fh) { }
+static void no_op(T) { }
 
 int main(int argc, const char ** argv) {
     // Context managers are the first thing to tackle. No need for stupid unique ptr business. Just add syntactic sugar so we clean up resources. Not necessarily exception safe either.

@@ -1,8 +1,19 @@
+ifndef makefile_env_defined
+  include Makefile.env
+endif
 
-bootstrap: bootstrap/bin/bootstrap.out
+.PHONY: bootstrap
 
-bootstrap/bin/bootstrap.out: bootstrap/src/bootstrap.cpd
-	cd bootstrap && mkdir -p bin && g++ -std=c++11 -x c++ src/bootstrap.cpd -o bin/bootstrap.out
+bootstrap:
+	cd bootstrap && $(MAKE)
+
+v0: bootstrap
+	
+
+#bootstrap: bootstrap/bin/bootstrap.out
+
+#bootstrap/bin/bootstrap.out: bootstrap/src/bootstrap.cpd
+#	cd bootstrap && mkdir -p bin && g++ -std=c++11 -x c++ src/bootstrap.cpd -o bin/bootstrap.out
 
 #all: bootstrap.out bootstrap.cpp
 #
