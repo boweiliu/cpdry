@@ -2,7 +2,7 @@ ifndef makefile_env_defined
   include Makefile.env
 endif
 
-.PHONY: bootstrap v0
+.PHONY: bootstrap v0 all clean
 
 all: v0
 
@@ -11,6 +11,10 @@ bootstrap:
 
 v0: bootstrap
 	cd v0 && $(MAKE)
+
+clean:
+	cd bootstrap && $(MAKE) clean
+	cd v0 && $(MAKE) clean
 	
 
 #bootstrap: bootstrap/bin/bootstrap.out
