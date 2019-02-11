@@ -5,7 +5,7 @@ endif
 all: bin/a.out
 
 out/main.cpp: src/main.cpd
-	../bootstrap/bin/a.out src/main.cpd out/main.cpp
+	../bootstrap/bin/a.out src/main.cpd -o out/main.cpp
 
 bin/a.out: out/main.cpp
-	$(CC) -x c++ out/main.cpp -o bin/a.out
+	$(CC) $(CFLAGS) -x c++ out/main.cpp -o bin/a.out

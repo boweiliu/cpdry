@@ -2,12 +2,15 @@ ifndef makefile_env_defined
   include Makefile.env
 endif
 
-.PHONY: bootstrap
+.PHONY: bootstrap v0
+
+all: v0
 
 bootstrap:
 	cd bootstrap && $(MAKE)
 
 v0: bootstrap
+	cd v0 && $(MAKE)
 	
 
 #bootstrap: bootstrap/bin/bootstrap.out

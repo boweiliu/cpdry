@@ -47,12 +47,19 @@ int main(int argc, const char ** argv) {
     if (argc < 2) { // use std in
         in_fp = unique_ptr<istream, decltype(&close_infile)>(&cin, &no_op<istream *>);
         out_fp = unique_ptr<ostream, decltype(&close_outfile)>(&cout, &no_op<ostream *>);
-    } else {
+    } else if (argc == 2) { // onnly 1 argument provided: compile .cpd to .cpp in-place
         string fname = argv[1];
         in_fp = unique_ptr<istream, decltype(&close_infile)>(new ifstream(fname.c_str()), &close_infile);
         // replace .cpd with .cpp
         string out_fname = fname.substr(0, fname.length() - 1) + "p";
         out_fp = unique_ptr<ostream, decltype(&close_outfile)>(new ofstream(out_fname.c_str()), &close_outfile);
+    } else if (argc == 4) { // in -o out
+        const char * fname = argv[1];
+        in_fp = unique_ptr<istream, decltype(&close_infile)>(new ifstream(fname), &close_infile);
+        // TODO check argv[2] == "-o"
+        const char * out_fname = argv[3];
+        out_fp = unique_ptr<ostream, decltype(&close_outfile)>(new ofstream(out_fname), &close_outfile);
+        //std::cout << "out fname is " << out_fname << std::endl;
     }
     // now start reading lines of file
     string line;
