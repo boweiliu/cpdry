@@ -39,6 +39,24 @@ static void close_outfile(ostream *fh) { dynamic_cast<ofstream *>(fh)->close(); 
 template <class T>
 static void no_op(T) { }
 
+void compile_to(istream *in_fp, ostream *out_fp)
+{
+    string line;
+    ostream &out_fh = *out_fp;
+    int line_no = -1;
+    //void * stack = nullptr;
+    while (getline(*in_fp, line)) {
+        //for ( auto ch : line ) {
+        //    if (ch == '(') {
+        //        stack += 1;
+        //    }
+        //}
+        line_no += 1;
+        out_fh << line << "\n";
+    }
+}
+
+
 int main(int argc, const char ** argv) {
     // Context managers are the first thing to tackle. No need for stupid unique ptr business. Just add syntactic sugar so we clean up resources. Not necessarily exception safe either.
     unique_ptr<istream, decltype(&close_infile)> in_fp(nullptr, &no_op<istream *>);
@@ -61,22 +79,11 @@ int main(int argc, const char ** argv) {
         out_fp = unique_ptr<ostream, decltype(&close_outfile)>(new ofstream(out_fname), &close_outfile);
         std::cout << "out fname is " << out_fname << std::endl;
     }
+    compile_to(in_fp.get(), out_fp.get());
     // now start reading lines of file
-    string line;
-    ostream &out_fh = *out_fp;
-    int line_no = -1;
-    while (getline(*in_fp, line)) {
-        //for ( auto ch : line ) {
-        //    if (ch == '(') {
-        //        // do
-        //    }
-        //}
-        line_no += 1;
-        out_fh << line << "\n";
-    }
-    
     return 0;
 }
+
 
 // this ends a verbatim c/c++ block
 #endif

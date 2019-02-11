@@ -4,13 +4,16 @@ endif
 
 .PHONY: bootstrap v0 all clean
 
-all: v0
+v1: v0
+	cd v1 && $(MAKE)
+
+v0: bootstrap
+	cd v0 && $(MAKE)
 
 bootstrap:
 	cd bootstrap && $(MAKE)
 
-v0: bootstrap
-	cd v0 && $(MAKE)
+
 
 clean:
 	cd bootstrap && $(MAKE) clean
