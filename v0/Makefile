@@ -6,7 +6,7 @@ endif
 
 all: bin/a.out
 
-out/main.cpp: src/main.cpd
+out/main.cpp: src/main.cpd ../bootstrap/bin/a.out
 	../bootstrap/bin/a.out src/main.cpd -o out/main.cpp
 
 bin/a.out: out/main.cpp

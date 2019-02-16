@@ -46,11 +46,11 @@ void compile_to(istream *in_fp, ostream *out_fp)
     int line_no = -1;
     //void * stack = nullptr;
     while (getline(*in_fp, line)) {
-        //for ( auto ch : line ) {
-        //    if (ch == '(') {
-        //        stack += 1;
-        //    }
-        //}
+        for ( auto ch : line ) {
+            if (ch == '(') {
+                stack += 1;
+            }
+        }
         line_no += 1;
         out_fh << line << "\n";
     }
