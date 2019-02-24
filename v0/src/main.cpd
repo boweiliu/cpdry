@@ -33,26 +33,86 @@ using std::string;
 using std::cin;
 using std::cout;
 using std::getline;
+#include <vector>
+using std::vector;
+#include <experimental/string_view>
+using std::experimental::string_view;
+using std::to_string;
 
 static void close_infile(istream *fh) { dynamic_cast<ifstream *>(fh)->close(); }
 static void close_outfile(ostream *fh) { dynamic_cast<ofstream *>(fh)->close(); }
 template <class T>
 static void no_op(T) { }
 
+// Due to string_view ownership semantics, this MUST be passed by ref
+vector<string_view> tokenize(string & line)
+{
+    vector<string_view> to_ret{};
+    size_t start_idx = 0;
+    // simply split by whitespace
+    for (size_t i = 0; i < line.size(); i++) {
+        if (' ' == line[i] || '\t' == line[i] || '\n' == line[i]) {
+            if (i - start_idx > 0) {
+                to_ret.push_back(string_view{&line[start_idx], i - start_idx});
+            }
+            start_idx = i + 1;
+        }
+    }
+    // close up last thing
+    if (line.size() - start_idx > 0) {
+        to_ret.emplace_back(&line[start_idx], line.size() - start_idx);
+    }
+    //for ( auto &  tok : to_ret ) {
+    //    std::cout << "token " << tok << std::endl;
+    //}
+    return to_ret;
+}
+
+typedef struct ParseState {
+    int paren_depth = 0;
+    bool pending_verbatim_mode = false;
+    bool verbatim_mode = false;
+} ParseState ;
+
 void compile_to(istream *in_fp, ostream *out_fp)
 {
     string line;
     ostream &out_fh = *out_fp;
-    int line_no = -1;
     //void * stack = nullptr;
-    while (getline(*in_fp, line)) {
-        for ( auto ch : line ) {
-            if (ch == '(') {
-                stack += 1;
+    ParseState parse_state;
+    for (int line_no = 1; getline(*in_fp, line); line_no++) {
+        if (parse_state.pending_verbatim_mode == true) {
+            parse_state.verbatim_mode = true;
+        }
+        string debug_info = to_string(line_no);
+        auto token_list = tokenize(line);
+        for (auto & token : token_list) {
+            //std::cout << "token " << token << std::endl;
+            if (token == "(") {
+                parse_state.paren_depth += 1;
+                debug_info += " open paren token found";
+            } else if (token == ")") {
+                parse_state.paren_depth -= 1;
+                debug_info += " close paren token found";
+            } else if (token == "#verbatim") {
+                parse_state.pending_verbatim_mode = true;
+                debug_info += " verbatim token found";
+            } else if (token == "#endverbatim") {
+                parse_state.verbatim_mode = false;
+                debug_info += " end verbatim token found";
             }
         }
-        line_no += 1;
-        out_fh << line << "\n";
+        // DEBUG DEBUG
+        //out_fh << line_no << "\t" << line << "\n";
+        int padding = 24 - debug_info.size();
+        if (padding > 0) {
+            debug_info += string(padding, ' ');
+        }
+        if (parse_state.verbatim_mode) {
+            out_fh << line << "\n";
+        }
+        //out_fh << "/* " << debug_info << " */\t" << line << "\n";
+        //out_fh << line << "\n";
     }
 }
 
