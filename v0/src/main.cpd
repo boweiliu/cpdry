@@ -83,6 +83,7 @@ void compile_to(istream *in_fp, ostream *out_fp)
     for (int line_no = 1; getline(*in_fp, line); line_no++) {
         if (parse_state.pending_verbatim_mode == true) {
             parse_state.verbatim_mode = true;
+            parse_state.pending_verbatim_mode = false;
         }
         string debug_info = to_string(line_no);
         auto token_list = tokenize(line);
@@ -110,6 +111,8 @@ void compile_to(istream *in_fp, ostream *out_fp)
         }
         if (parse_state.verbatim_mode) {
             out_fh << line << "\n";
+        } else {
+            out_fh << "\n";
         }
         //out_fh << "/* " << debug_info << " */\t" << line << "\n";
         //out_fh << line << "\n";
