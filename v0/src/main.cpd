@@ -20,24 +20,23 @@
 
 // parse the thing
 #include <iostream>
-#include <fstream>
-#include <string>
-
+using std::cin;
+using std::cout;
 using std::istream;
 using std::ostream;
+#include <fstream>
 using std::ifstream;
 using std::ofstream;
 #include <memory> 
 using std::unique_ptr;
+#include <string>
 using std::string;
-using std::cin;
-using std::cout;
 using std::getline;
+using std::to_string;
 #include <vector>
 using std::vector;
 #include <experimental/string_view>
 using std::experimental::string_view;
-using std::to_string;
 
 static void close_infile(istream *fh) { dynamic_cast<ifstream *>(fh)->close(); }
 static void close_outfile(ostream *fh) { dynamic_cast<ofstream *>(fh)->close(); }

@@ -1,4 +1,4 @@
-( // start of compilation unit
+( ( // start of compilation unit )
 ( #verbatim
 // parse the thing
 #include <iostream>
