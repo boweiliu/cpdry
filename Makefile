@@ -4,6 +4,9 @@ endif
 
 .PHONY: bootstrap v0 all clean
 
+v2: v1
+	cd v2 && $(MAKE)
+
 v1: v0
 	cd v1 && $(MAKE)
 

@@ -97,11 +97,9 @@ void compile_to(istream *in_fp, ostream *out_fp)
             debug_info += string(padding, ' ');
         }
         if (parse_state.verbatim_mode) {
-            //out_fh << line << "\n";
-            out_fh << "/* " << debug_info << " */\t" << line << "\n";
+            out_fh << line << "\n";
         } else {
-            //out_fh << "\n";
-            out_fh << "/* " << debug_info << " */\t" << "\n";
+            out_fh << "\n";
         }
         //out_fh << "/* " << debug_info << " */\t" << line << "\n";
         //out_fh << line << "\n";
